@@ -1,20 +1,28 @@
-.app-container {
-  background: url('../public/movie.jpg') no-repeat center center fixed; /* Use movie.jpg as background */
-  background-size: cover; /* Ensure it covers the entire container */
-  min-height: 100vh;
-  padding: 20px;
-  color: #ffffff;
-  position: relative; /* For layering */
+:root{
+  --bg-dark: #0B0B0B;
+  --paper: #F3E9D5;
+  --accent: #ff6f61;
+  --muted: #9aa3b2;
+  --card-bg: rgba(20,20,30,0.75);
 }
 
+/* App background */
+.app-container {
+  background: url('../public/movie.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  padding: 28px;
+  color: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* overlay to make text readable */
 .app-container::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Dark overlay for readability */
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(10,10,18,0.75) 70%);
   z-index: 0;
 }
 
@@ -22,80 +30,98 @@ h1 {
   font-family: 'Cinzel', serif;
   color: #ffffff;
   font-weight: 700;
-  position: relative; /* Above overlay */
-  z-index: 1;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 16px;
 }
 
+/* Input area */
 .input-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 18px;
   position: relative;
-  z-index: 1; /* Above background */
+  z-index: 2;
 }
 
+/* wrapper around input so dropdown can be absolute under it */
+.search-wrapper {
+  position: relative;
+  width: 420px;
+}
+
+/* central search bar */
 .search-bar {
-  width: 400px;
-  padding: 12px;
+  width: 100%;
+  padding: 12px 16px;
   border-radius: 30px;
-  border: 2px solid #4a90e2;
+  border: 2px solid rgba(255,255,255,0.16);
   font-size: 16px;
   font-family: 'Cinzel', serif;
-  background-color: rgba(255, 255, 255, 0);
+  background-color: rgba(255, 255, 255, 0.03);
   color: #ffffff;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-bar::placeholder {
-  color: #ccc;
+  color: rgba(255,255,255,0.6);
 }
 
 .search-bar:focus {
-  border-color: #ff6f61;
+  border-color: var(--accent);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 0 4px rgba(255,111,97,0.06);
 }
 
+/* suggestions dropdown positioned relative to wrapper */
 .suggestions-list {
-  position:fixed;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background-color: rgba(255,255,255,0.98);
   border-radius: 10px;
-  max-height: 200px;
-  overflow: hidden; /* No scroll */
-  width: auto;
-  z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  color: #000;
-  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(2,6,23,0.6);
+  z-index: 4000; /* make sure it's above everything else */
+  padding: 6px 0;
   margin: 0;
-  list-style: none; /* Remove bullets */
+  list-style: none;
+  color: #111;
 }
 
+/* suggestion items */
 .suggestion-item {
-  padding: 10px 15px;
+  padding: 10px 14px;
   cursor: pointer;
+  font-family: 'Cinzel', serif;
+  border-left: 4px solid transparent;
 }
-
 .suggestion-item:hover {
-  background-color: #f0f0f0;
+  background-color: rgba(0,0,0,0.04);
+  border-left-color: var(--accent);
 }
 
+/* Recommend button */
 .recommend-button {
-  padding: 12px 25px;
+  padding: 12px 26px;
   border-radius: 30px;
-  background-color: #ff6f61;
+  background-color: var(--accent);
   color: #fff;
   border: none;
   cursor: pointer;
   font-family: 'Cinzel', serif;
-  font-weight: 400;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.12s ease;
+  z-index: 2;
 }
 
 .recommend-button:hover:not(:disabled) {
   background-color: #e65b50;
+  transform: translateY(-1px);
 }
 
 .recommend-button:disabled {
@@ -103,65 +129,101 @@ h1 {
   cursor: not-allowed;
 }
 
+/* Cards grid adjustment */
+.row {
+  margin-top: 20px;
+  position: relative;
+  z-index: 1; /* behind input dropdown */
+}
+
+/* card style */
 .card {
   margin-bottom: 20px;
-  background-color: rgba(46, 46, 58, 0.8); /* Semi-transparent for readability */
-  border-radius: 15px;
+  background-color: var(--card-bg);
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.3s ease;
-  z-index: 1; /* Behind dropdown */
+  transition: transform 0.28s cubic-bezier(.22,.9,.32,1), box-shadow .2s;
+  box-shadow: 0 6px 18px rgba(7,10,25,0.5);
 }
 
 .card:hover {
-  transform: scale(1.05);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 14px 30px rgba(7,10,25,0.7);
+}
+
+/* poster wrapper for overlay title */
+.poster-wrapper {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  background: #111;
 }
 
 .card-img-top {
-  height: 400px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.card-body {
-  padding: 15px;
+/* title overlay at bottom of poster */
+.poster-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 60%);
+  color: #fff;
 }
 
-.card-title {
-  color: #ffffff;
-  margin-bottom: 10px;
+.poster-title {
+  margin: 0;
+  font-size: 18px;
   font-family: 'Cinzel', serif;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+/* body and genres */
+.card-body {
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
 }
 
 .genres-container {
   display: flex;
-  gap: 5px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .genre-box {
-  padding: 5px 10px;
-  border-radius: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-family: 'Cinzel', serif;
+  opacity: 0.95;
 }
 
+/* Alerts / messages */
 .alert {
   margin-bottom: 20px;
-  z-index: 1; /* Above background */
+  z-index: 2;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Fade-in animation */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+.fade-in { animation: fadeIn 0.35s ease-in; }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
+/* small responsive tweak */
+@media (max-width: 768px) {
+  .search-wrapper { width: 84vw; }
+  .card { margin-left: 8px; margin-right: 8px; }
 }
